@@ -3,6 +3,6 @@ export LIBS="-lallegro -lallegro_main -lallegro_primitives -lallegro_font -lalle
 export CFLAGS="-fdiagnostics-color=always"
 export SRC="src/*.cpp    \
             src/**/*.cpp"
-export INCLUDE="include"
+export INCLUDE="-Iinclude -Ideps"
 
-/usr/bin/g++ -g src/main.cpp -I${INCLUDE} -L${LIBS_DIR} ${LIBS}
+/usr/bin/g++ -g src/main.cpp ${INCLUDE} -L${LIBS_DIR} ${LIBS}

@@ -3,6 +3,7 @@
         {
             "name": "Default podesavanja",
             "includePath": [
+                "${workspaceFolder}/deps",
                 "${workspaceFolder}/include"
             ],
             "defines": [],

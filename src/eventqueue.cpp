@@ -1,13 +1,9 @@
 #include <eventqueue.hpp>
 #include <logger.hpp>
 
-EventQueue::~EventQueue(){
-    destroy();
-}
-
 // initalization
 int EventQueue::create() {
-    if (!_queue) {
+    if (_queue) {
         logger::warn("Tried to init already initialized EventQueue => nothing will happen");
         return 0;
     }
@@ -41,4 +37,17 @@ void EventQueue::unregisterDisplayEventSource(ALLEGRO_DISPLAY* disp){
 }
 void EventQueue::unregisterKeyboardEventSource(){
     unregisterEventSource(al_get_keyboard_event_source());
+}
+
+
+// basic getters
+ALLEGRO_EVENT_QUEUE* EventQueue::getAllegroEventQueue() {
+    return _queue;
+}
+
+bool EventQueue::popNext(ALLEGRO_EVENT* out_evt) {
+    if (!_queue) {
+        logger::err("Event queue not initialized"); return 0;
+    }
+    return al_get_next_event(_queue, out_evt);
 }

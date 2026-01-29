@@ -20,11 +20,11 @@ public:
     /**
      * @short Calls create(w,h)
      */
-    Display(int w, int h);
+    Display(int w, int h, const char* title=NULL);
     /**
      * Generally still should use destroy() function in game's cleanup function.
      */
-    ~Display();
+    ~Display() = default;
 
     /**
      * Creates display.
@@ -33,13 +33,23 @@ public:
      * @param height - Height of the display
      * @returns error code
      */
-    int create(int width, int height);
+    int create(int width, int height, const char* title=NULL);
     /**
      * Destroys this display object.
      * After this function, the display object could be created again without created a new variable.
      * But consider it a bad practice.
      */
     void destroy();
+
+    /**
+     * Does al_flip_display(), but the function name comes from GLFW-ish style
+     */
+    static void swapBuffers();
+
+    /**
+     * Sets the title for this display
+     */
+    void setTitle(const char* title);
 
     /**
      * @returns @code{ALLEGRO_DISPLAY* _display}

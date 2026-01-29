@@ -12,8 +12,8 @@ public:
      * Empty constructor. Need to call create()
      */
     EventQueue() = default;
-    /// @brief destructor. basicly calls destroy()
-    ~EventQueue();
+    /// @brief destructor (does nothing). u bettr call destroy()
+    ~EventQueue() = default;
 
     /**
      * Initializes the event queue
@@ -23,6 +23,13 @@ public:
      * Releases event queue
      */
     void destroy();
+
+
+    /**
+     * Pops next event.
+     * @returns true if has more events, false if
+     */
+    bool popNext(ALLEGRO_EVENT* out_event);
 
     /**
      * Returns allegro event queue.

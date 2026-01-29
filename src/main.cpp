@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
         uninstall();
         return 0;
     }
+    std::cout << "--> game::run()\n";
     game::run();
     game::clean();
     uninstall();

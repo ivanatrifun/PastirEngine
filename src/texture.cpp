@@ -25,7 +25,7 @@ void Texture::destroy() {
     al_destroy_bitmap(_bitmap);
 }
 
-ALLEGRO_BITMAP* Texture::getAllegroBitmap() {
+ALLEGRO_BITMAP* Texture::getAllegroBitmap() const {
     return _bitmap;
 }
 

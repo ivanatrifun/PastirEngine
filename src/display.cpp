@@ -38,6 +38,9 @@ void Display::destroy() {
     _display = NULL;
 }
 
+void Display::clear(int r, int g, int b){
+    al_clear_to_color(al_map_rgb(r,g,b));
+}
 void Display::swapBuffers(){
     al_flip_display();
 }

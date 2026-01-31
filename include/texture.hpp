@@ -32,7 +32,7 @@ public:
     void destroy();
 
     /// @returns @code{ALLEGRO_BITMAP* _bitmap}
-    ALLEGRO_BITMAP* getAllegroBitmap();
+    ALLEGRO_BITMAP* getAllegroBitmap() const;
     /**
      * @returns OpenGL Texture ID (use for manual bindings ili tako nekako)
      */

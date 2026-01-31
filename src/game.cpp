@@ -4,7 +4,7 @@
 #include <logger.hpp>
 #include <bank.hpp>
 #include <asset_manager.hpp>
-
+#include <sprite.hpp>
 
 // TODO: Bank<T> class
 
@@ -12,14 +12,12 @@
 #define WINDOW_HEIGHT 640
 
 Display display;
-TextureBank textureBank;
+Sprite sprite;
 
 int game::run(){
     unsigned int frames = 0;
     double lastTime = 0.0;
     while (true) {
-        Display::swapBuffers();
-
         /* handle events: */ {
             ALLEGRO_EVENT evt;
             while (display.getEventQueue()->popNext(&evt)) {
@@ -33,6 +31,13 @@ int game::run(){
             lastTime = al_get_time();
             display.setTitle(  (std::string("DEMO FPS: ")+std::to_string(frames)).c_str()  );
             frames = 0;
+        }
+
+
+        /* DRAWING */ {
+            Display::clear(100,0,0);
+            sprite.draw();
+            Display::swapBuffers();
         }
     }
 
@@ -51,16 +56,19 @@ int game::init(){
 
 
     LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO"));
+    bank::init(1);
+    TextureBank textureBank;
     LUKA_ASSERT0(textureBank.init(1));
     LUKA_ASSERT1(textureBank.loadTextureAt(0, "block.png", ALLEGRO_VIDEO_BITMAP));
+    bank::makeGlobal(textureBank, BANK_MAP_DRAWABLE_TEXTUREBANK);
 
     return 0;
 }
 void game::clean(){
     logger::info("Cleaning game components...");
 
-    textureBank.destroyAll();
-    textureBank.free();
+    bank::destroyAll();
+    bank::free();
 
     display.destroy();
 }

@@ -3,6 +3,10 @@
 
 // ## TEXTURE BANK ## //
 
+TextureBank::TextureBank(int initial_size) {
+    init(initial_size);
+}
+
 int TextureBank::init(int size) {
     initialSize = size;
     contents = new Texture[size];
@@ -36,4 +40,39 @@ void TextureBank::destroyAll() {
 }
 void TextureBank::free() {
     delete[] contents;
+}
+
+
+const Texture& TextureBank::getTexture(TextureID id) const {
+    return contents[id];
+}
+
+
+
+
+// #namespace bank
+
+namespace bank {
+    TextureBank *banks = NULL;
+    unsigned int __initialSize;
+} // namespace bank
+
+void bank::init(unsigned int size) {
+    __initialSize = size;
+    banks = new TextureBank[size];
+}
+void bank::destroyAll() {
+    for (int i=0; i<__initialSize; i++) {
+        banks[i].destroyAll();
+        banks[i].free();
+    }
+}
+void bank::free(){
+    delete[] banks;
+}
+void bank::makeGlobal(TextureBank& bank, unsigned int id) {
+    banks[id] = bank;
+}
+const TextureBank& bank::getBank(unsigned int id) {
+    return banks[id];
 }

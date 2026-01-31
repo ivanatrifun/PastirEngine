@@ -33,6 +33,11 @@ public:
      */
     TextureID loadTextureAt(TextureID id, const char* filepath, int allegro_flags=0x0);
     /**
+     * Returns the Texture at specified ID
+     * @returns textures[id]
+     */
+    const Texture& getTexture(TextureID id) const;
+    /**
      * Destroys specified texture.
      * That texture will NOT get removed from bank.
      * @param id the texture ID that will get destroyed
@@ -46,6 +51,35 @@ public:
      */
     void free();
 };
+
+
+
+namespace bank {
+    /**
+     * Initializes the TextureBank bank with given bank count.
+     */
+    void init(unsigned int num_banks);
+    /**
+     * Destroys all banks in list.
+     */
+    void destroyAll();
+    /**
+     * Frees whole bank list. Should be now initializable again (ofc not recommended)
+     */
+    void free();
+    /**
+     * Makes bank global at given index. [copy] done with operator=
+     * Bank will be accessible with getBank(index).
+     */
+    void makeGlobal(TextureBank& bank, unsigned int index);
+
+    /**
+     * @returns TextureBank at index
+     */
+    const TextureBank& getBank(unsigned int index);
+} // namespace bank
+
+#define BANK_MAP_DRAWABLE_TEXTUREBANK 0
 
 
 #pragma endregion

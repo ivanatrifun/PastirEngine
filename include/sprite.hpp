@@ -10,8 +10,8 @@ class Sprite {
 private:
     // cannot have its own private texture
     // but instead can have a bank texture id :)
-    TextureID textureID;
-    float2 position;
+    TextureID textureID = -1;
+    float2 position = {0,0};
 public:
     Sprite() = default;
     ~Sprite() = default;
@@ -25,6 +25,11 @@ public:
     /// @brief Returns the current position @code{float2 position}
     /// @return position
     float2 getPosition() const;
+
+    /**
+     * Draw
+     */
+    void draw();
 
 
     /// @brief Speficy texture

@@ -42,6 +42,10 @@ public:
     void destroy();
 
     /**
+     * Clears current selected backbuffer to the color
+     */
+    static void clear(int r, int g, int b);
+    /**
      * Does al_flip_display(), but the function name comes from GLFW-ish style
      */
     static void swapBuffers();

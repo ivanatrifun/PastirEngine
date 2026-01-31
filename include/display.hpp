@@ -51,6 +51,12 @@ public:
     static void swapBuffers();
 
     /**
+     * Scales everything
+     */
+    static void useScale(float sx, float sy);
+    static void dontUseScale();
+
+    /**
      * Sets the title for this display
      */
     void setTitle(const char* title);

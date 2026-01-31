@@ -22,7 +22,7 @@ TextureID Sprite::getTextureID() const {
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 void Sprite::draw(){
-    ALLEGRO_BITMAP* bitmap = bank::getBank(BANK_MAP_DRAWABLE_TEXTUREBANK).getTexture(0).getAllegroBitmap();
+    ALLEGRO_BITMAP* bitmap = bank::getBank(BANK_MAP_DRAWABLE_TEXTUREBANK).getTexture(textureID).getAllegroBitmap();
     // al_draw_tinted_scaled_rotated_bitmap(bitmap, al_map_rgba(100,100,100, 100), cx, cy, dx, dy, xscale, yscale, angle,  flags);
     al_draw_bitmap(bitmap, position.x, position.y, 0);
 }

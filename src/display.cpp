@@ -61,3 +61,15 @@ bool Display::isCreated() const {
 EventQueue* Display::getEventQueue() {
     return &_evqueue;
 }
+
+
+
+void Display::useScale(float sx, float sy){
+    ALLEGRO_TRANSFORM trans;
+    al_identity_transform(&trans);
+    al_scale_transform(&trans, sx, sy);
+    al_use_transform(&trans);
+}
+void Display::dontUseScale(){
+    al_use_transform(NULL);
+}

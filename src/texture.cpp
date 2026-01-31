@@ -13,7 +13,7 @@ int Texture::create(int w, int h) {
     return _bitmap==NULL; // 1 = error, 0 = success
 }
 int Texture::load(const char* filename, int flags) {
-    printf(" # Loading texture: %s [%s]\n", filename, (flags&ALLEGRO_VIDEO_BITMAP)? "video" : "memory");
+    // printf(" # Loading texture: %s [%s]\n", filename, (flags&ALLEGRO_VIDEO_BITMAP)? "video" : "memory");
     _bitmap = al_load_bitmap_flags(filename, flags);
     if (!_bitmap) {
         fprintf(stderr, "%sCould not load texture: %s\n", LOGGER_ERROR_PREFIX, filename);

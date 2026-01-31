@@ -9,7 +9,7 @@ typedef int TextureID;
 
 class TextureBank {
 protected:
-    int size, initialSize;
+    int size=0, initialSize;
     Texture *contents;
 public:
     TextureBank() = default;
@@ -20,6 +20,10 @@ public:
      * Init
      */
     int init(int initial_size);
+    /**
+     * 
+     */
+    int loadTextures(const char* prefix, const char* (&textureFileNames)[], unsigned int start, unsigned int count, const char* suffix, int allegro_flags=0x0);
     /**
      * Loads texture into bank
      * @return ID of the loaded texture

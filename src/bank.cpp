@@ -13,9 +13,34 @@ int TextureBank::init(int size) {
     return contents==NULL;
 }
 
+int TextureBank::loadTextures(const char *prefix, const char* (&textureFileNames)[], unsigned int start, unsigned int count, const char *suffix, int allegro_flags) {
+    int err=0;
+    for (unsigned int i=0; i<count; i++) {
+        std::string full="";
+        if (prefix) full += prefix;
+        //std::cout << textureFileNames[start+i]  << std::endl;
+        if (!textureFileNames[start+i]) {
+            fprintf(stderr, "[TEXERR] Texture file name at index=%u ==NULL (skipping)\n", start+i);
+            err = -1;
+            continue;
+        }
+        //std::cout << textureFileNames[1]  << std::endl;
+        full += std::string(textureFileNames[start+i]);
+        //std::cout << textureFileNames[2]  << std::endl;
+        if (suffix) full += std::string(suffix);
+        // std::cout << "## " << full << " size:"<<size << std::endl;
+        if (loadTexture(full.c_str(), allegro_flags) < 0) err=-1;
+    }
+    // std::cout << "bank error: " << err << std::endl;
+    return err;
+}
+
 TextureID TextureBank::loadTexture(const char* file, int al_flags) {
-    if (size+1>=initialSize) return -1;
-    contents[size++].load(file,al_flags);
+    if (size>=initialSize) {
+        fprintf(stderr, "[BANK::ERROR] Max content size has been reached: %d\n", initialSize);
+        return -2;
+    }
+    if (contents[size++].load(file,al_flags)) return -1;
     return size;
 }
 
@@ -71,6 +96,7 @@ void bank::free(){
     delete[] banks;
 }
 void bank::makeGlobal(TextureBank& bank, unsigned int id) {
+    //std::cout << "Texture bank made global at " << id << std::endl;
     banks[id] = bank;
 }
 const TextureBank& bank::getBank(unsigned int id) {

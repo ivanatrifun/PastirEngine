@@ -4,7 +4,7 @@
 #include <logger.hpp>
 #include <bank.hpp>
 #include <asset_manager.hpp>
-#include <sprite.hpp>
+#include <Drawable.hpp>
 
 // TODO: Bank<T> class
 
@@ -12,7 +12,7 @@
 #define WINDOW_HEIGHT 640
 
 Display display;
-Sprite sprite;
+Drawable drawable;
 
 int game::run(){
     unsigned int frames = 0;
@@ -36,7 +36,7 @@ int game::run(){
 
         /* DRAWING */ {
             Display::clear(100,0,0);
-            sprite.draw();
+            drawable.draw();
             Display::swapBuffers();
         }
     }
@@ -56,11 +56,14 @@ int game::init(){
 
 
     LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO"));
+    display.useScale(4.0f, 4.0f);
     bank::init(1);
     TextureBank textureBank;
-    LUKA_ASSERT0(textureBank.init(1));
-    LUKA_ASSERT1(textureBank.loadTextureAt(0, "block.png", ALLEGRO_VIDEO_BITMAP));
+    LUKA_ASSERT0(textureBank.init(Drawable::DRAWABLE_TEXTURE_COUNT));
+    LUKA_ASSERT0(textureBank.loadTextures(NULL, Drawable::TEXTURES, 0, Drawable::DRAWABLE_TEXTURE_COUNT, ".png",  ALLEGRO_VIDEO_BITMAP));
     bank::makeGlobal(textureBank, BANK_MAP_DRAWABLE_TEXTUREBANK);
+
+    drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
 
     return 0;
 }

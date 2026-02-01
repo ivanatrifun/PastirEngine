@@ -6,6 +6,7 @@
 #include <asset_manager.hpp>
 #include <sprite/Drawable.hpp>
 #include <input.hpp>
+#include <components/RoomLoader.hpp>
 
 // TODO: Bank<T> class
 
@@ -15,6 +16,7 @@
 
 Display display;
 Drawable drawable;
+Room room;
 
 
 #pragma region game::run
@@ -43,7 +45,7 @@ int game::run(){
 
         /* DRAWING */ {
             Display::clear(100,0,0);
-            drawable.draw();
+            room.draw();
             Display::swapBuffers();
         }
     }
@@ -57,11 +59,11 @@ int game::run(){
 
 void game::update() {
     keyboard::fetchKeyboardState();
-    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * 2.0f;
-    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * 2.0f;
-    float2 pos = drawable.getPosition();
+    static const float speed = 1.0f;
+    float dx = (keyboard::keyDown(ALLEGRO_KEY_RIGHT)-keyboard::keyDown(ALLEGRO_KEY_LEFT)) * speed;
+    float dy = (keyboard::keyDown(ALLEGRO_KEY_DOWN)-keyboard::keyDown(ALLEGRO_KEY_UP)) * speed;
     // drawable.setPosition(pos.x+dx, pos.y+dy);
-    drawable.move(dx,dy);
+    room.move(dx,dy);
 }
 
 #pragma endregion
@@ -89,6 +91,10 @@ int game::init(){
     bank::makeGlobal(textureBank, BANK_MAP_DRAWABLE_TEXTUREBANK);
 
     drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
+
+
+    room_loader::load(0); // .txt
+    room_loader::swapObjects(room);
 
     return 0;
 }

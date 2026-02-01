@@ -8,6 +8,12 @@ struct vec2 {
 };
 typedef vec2<float> float2;
 
+template<typename T>
+struct vec3 {
+    T x,y,z;
+};
+typedef vec3<float> float3;
+
 // for some reason defined in sprite.cpp
 float2 operator+(float2 a, float2 b);
 

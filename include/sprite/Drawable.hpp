@@ -3,6 +3,7 @@
 #define __DRAWABLE_HPP
 
 #include <sprite/sprite.hpp>
+#include <array>
 
 /**
  * @class Drawable
@@ -11,7 +12,6 @@
  */
 class Drawable : public Sprite {
 protected:
-    
 public:    
     /**
      * @enum data_components
@@ -44,11 +44,16 @@ public:
         COMP_ANGLE,
         COMP_SCALEX,
         COMP_SCALEY,
-        COMP_SPECIAL,
-        COMP_SPECIAL2, // 10
+        COMP_TINT_HUE,
+        COMP_TINT_SATURATION,
+        COMP_TINT_BRIGHTNESS,
+        COMP_SPECIAL, // 12
 
         COMPONENT_COUNT
     };
+
+    typedef std::array<int, data_components::COMPONENT_COUNT> DrawableData;
+#define DRAWABLE_DEFAULT_DATA {0, 0, 0, 0, 0, 0, 0, 100, 100, 0, 0, 0}
 
     
     /**
@@ -138,10 +143,16 @@ public:
     
     static const int SOLID_IDs[];
 
+    DrawableData data;
+
     Drawable() = default;
     Drawable(TextureID texture, float x=0.0f, float y=0.0f);
+    Drawable(DrawableData& data);
 
     void init(TextureID texture, float x=0.0f, float y=0.0f);
+    void init(DrawableData& data);
+
+    static void drawData(DrawableData& data, float2 translate={0,0});
 };
 
 #endif

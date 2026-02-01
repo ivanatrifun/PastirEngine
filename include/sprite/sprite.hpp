@@ -7,7 +7,7 @@
 #include <data_types.hpp>
 
 class Sprite {
-private:
+protected:
     // cannot have its own private texture
     // but instead can have a bank texture id :)
     TextureID textureID = -1;

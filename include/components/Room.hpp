@@ -1,0 +1,21 @@
+#pragma once
+#ifndef __ROOM_HPP
+#define __ROOM_HPP
+
+#include <vector>
+#include <sprite/Drawable.hpp>
+
+class Room {
+    float2 translate = {0,0};
+public:
+    std::vector<Drawable::DrawableData> objects;
+
+    void draw();
+
+    void setTranslate(float tx, float ty);
+    float2 getTranslate() const;
+    void move(float dx, float dy);
+};
+
+
+#endif

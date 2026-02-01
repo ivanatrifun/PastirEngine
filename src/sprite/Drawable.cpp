@@ -25,3 +25,57 @@ void Drawable::init(TextureID tex, float x, float y) {
     setTextureID(tex);
     setPosition(x,y);
 }
+
+Drawable::Drawable(DrawableData& data) {
+    init(data);
+}
+
+void Drawable::init(DrawableData& _data) {
+    data = _data;
+}
+
+#include <cmath>
+float degreesToRadians(float degrees) {
+    return degrees * M_PI / 180.0;
+}
+
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_color.h>
+void Drawable::drawData(DrawableData& data, float2 translate) {
+    ALLEGRO_BITMAP* bitmap = bank::getBank(BANK_MAP_DRAWABLE_TEXTUREBANK)
+                                .getTexture(data[COMP_TEXTURE_ID])
+                                .getAllegroBitmap();
+    if (!bitmap) return;
+
+    // definition in game.cpp
+    static const float PIXEL_SCALE = 4.0f;
+    // full translated position
+    float2 pos = {  static_cast<float>(data[COMP_X])/PIXEL_SCALE + translate.x,
+                    static_cast<float>(data[COMP_Y])/PIXEL_SCALE + translate.y  };
+    float angle = degreesToRadians(static_cast<float>(data[COMP_ANGLE]));
+
+    float2 scale = {static_cast<float>(data[COMP_SCALEX])/100.0f, static_cast<float>(data[COMP_SCALEY])/100.0f};
+    float3 hsb ={   static_cast<float>(data[COMP_TINT_HUE])/180.0f,
+                    0.5f+static_cast<float>(data[COMP_TINT_SATURATION])/100.0f,
+                    1.5f+static_cast<float>(data[COMP_TINT_BRIGHTNESS])/200.0f
+                };
+
+    float __winw = (float) al_get_display_width (al_get_current_display());
+    float __winh = (float) al_get_display_height(al_get_current_display());
+    float __imgw = (float) al_get_bitmap_width (bitmap);
+    float __imgh = (float) al_get_bitmap_height(bitmap);
+    // clipping
+    if (pos.x < -__imgw*scale.x || pos.y < -__imgh*scale.y) return; // clip (won't be visible on screen anyway)
+    if (pos.x*PIXEL_SCALE >= __winw || pos.y*PIXEL_SCALE >= __winh) return; // clip (won't be visible on screen anyway)
+
+    static const float2 imageCenter = {0.0f, 0.0f};
+    al_draw_tinted_scaled_rotated_bitmap(bitmap,
+                                        al_color_hsl(hsb.x, hsb.y, hsb.z),
+                                        // al_map_rgb(100,100,100),
+                                        imageCenter.x, imageCenter.y,
+                                        pos.x, pos.y,
+                                        scale.x, scale.y,
+                                        angle,
+                                        0);
+    // al_draw_bitmap(bitmap, pos.x+translate.x, pos.y+translate.y, 0);
+}

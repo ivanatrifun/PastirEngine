@@ -96,6 +96,8 @@ int game::init(){
     room_loader::load(0); // .txt
     room_loader::swapObjects(room);
 
+    std::cout << "Room memory usage: " << __memsizeToString(room.getMemoryUsage()) << std::endl;
+
     return 0;
 }
 #pragma endregion

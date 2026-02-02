@@ -6,5 +6,5 @@ export SRC="src/*.cpp src/**/*.cpp"
 #            src/**/*.cpp"
 export INCLUDE="-Iinclude -Ideps"
 
-/usr/bin/g++ ${CFLAGS} -g ${SRC} ${INCLUDE} -L${LIBS_DIR} ${LIBS}
+/usr/bin/g++ ${CFLAGS} -g test/*.cpp ${SRC} ${INCLUDE} -L${LIBS_DIR} ${LIBS}
 install_name_tool -add_rpath ${LIBS_DIR} a.out

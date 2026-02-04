@@ -5,15 +5,18 @@
 #include <allegro5/bitmap.h>
 #include <allegro5/allegro_opengl.h>
 
+/**
+ *  Texture a; a.load(...);
+ *  Texture b = a;
+ * In this case a and b have the same bitmap pointer. Beware
+ */
 class Texture {
 private:
     ALLEGRO_BITMAP* _bitmap;
 public:
     Texture() = default;
     ~Texture() = default;
-    // remove copy constructor (allegro bitmap pointer should not be copied)
-    Texture(const Texture&) = delete;
-    Texture& operator=(const Texture&) = delete;
+    // UNDO remove copy constructor (allegro bitmap pointer should not be copied) - UNDO
 
     /// @brief Calls load(filepath, allegro_flags)
     Texture(const char* filepath, int allegro_flags=0x0);
@@ -30,6 +33,11 @@ public:
      * Frees this texture.
      */
     void destroy();
+    /**
+     * Will destroy this object.
+     * But before that it copies its data into a new object.
+     */
+    void copyAndDestroy(Texture& dest);
 
     /// @returns @code{ALLEGRO_BITMAP* _bitmap}
     ALLEGRO_BITMAP* getAllegroBitmap() const;

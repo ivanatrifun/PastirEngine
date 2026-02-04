@@ -6,7 +6,8 @@
 
 std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
     std::vector<Rectu> tiles;
-    std::string filepath("/Users/luka/eclipse-workspace/Pastir-editor/assets/");
+    std::string filepath(std::getenv("HOME"));
+    filepath += ("/eclipse-workspace/Pastir-Igrica/assets/");
     filepath += relativefilepath;
     if (!std::filesystem::exists(filepath)) {
         fprintf(stderr, "{UTILITY} File doesn't exists %s\n", filepath.c_str());
@@ -35,6 +36,8 @@ std::vector<Rectu> util::loadTiles(const char* relativefilepath) {
     }
 
     file.close();
+
+    std::cout << "done\n";
 
     return tiles;
 }

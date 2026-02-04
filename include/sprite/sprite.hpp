@@ -10,15 +10,9 @@ class Sprite {
 protected:
     // cannot have its own private texture
     // but instead can have a bank texture id :)
-    /**
-     * Bank where the texture is stored
-     */
-    bank::textureBank _bank;
-    /**
-     * Texture ID of the texture stored in a texture bank
-     */
-    TextureID textureID = -1;
-    Rectu tileRect = {{0,0},{16,16}};
+    bank::TextureInfo texInfo = {
+        bank::bank_type::MULTITEX,0,-1,{{0,0},{16,16}}
+    };
 
     float2 position = {0,0};
     float2 translate = {0,0};
@@ -72,13 +66,19 @@ public:
     void draw();
 
 
+    /** Sets the texture's bank type.
+     * @param _bank
+     */
+    void setTexturesBankType(bank::bank_type);
+    /// @return Returns the bank where the sprite's texture is stored.
+    bank::bank_type getTexturesBankType() const;
     /** Sets the texture's bank.
      *  TextureID won't change after changing bank
      * @param _bank
      */
-    void setTexturesBank(bank::textureBank _bank);
+    void setTexturesBankID(unsigned int _bank);
     /// @return Returns the bank where the sprite's texture is stored.
-    bank::textureBank getTexturesBank() const;
+    unsigned int getTexturesBankID() const;
     /// @brief Speficy texture
     /// @param texture
     void setTextureID(TextureID texture);

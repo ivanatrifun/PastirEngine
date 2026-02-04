@@ -88,7 +88,8 @@ int TilesetBank::loadTexture(const char* file, int al_flags) {
 }
     
 int TilesetBank::loadTileRects(const char* tilerectsfile){
-    util::loadTiles(tilerectsfile);
+    tileRects = util::loadTiles(tilerectsfile);
+    return 0;
 }
 
 
@@ -102,71 +103,110 @@ Rectu TilesetBank::getTile(int drawableID) const {
 }
    
 void TilesetBank::destroy() {
-
+    texture.destroy();
 }
-
 
 #pragma endregion
 
 
 
 
-#pragma region namespace bank::
+#pragma region bank::multitex
 // #namespace bank
 
-namespace bank {
-    template<class T>
-    struct bankarr {
-        T *banks = NULL;
-        unsigned int initialSize=0;
-    };
-    bankarr<MultiTextureBank> multitex;
-    bankarr<TilesetBank> tilesets;
+namespace bank::multitex {
+    MultiTextureBank* banks;
+    unsigned int initialSize = 0;
 } // namespace bank
 
-void bank::init(unsigned int multitexsize, unsigned int tilesetsize) {
-    multitex.initialSize = multitexsize;
-    multitex.banks = new MultiTextureBank[multitexsize];
+using namespace bank;
 
-    tilesets.initialSize = multitexsize;
-    tilesets.banks = new TilesetBank[tilesetsize];
+void multitex::init(unsigned int num_banks) {
+    initialSize = num_banks;
+    banks = new MultiTextureBank[num_banks];
 }
-void bank::destroyAll() {
-    for (int i=0; i<multitex.initialSize; i++) {
-        multitex.banks[i].destroyAll();
-        multitex.banks[i].free();
-    }
-    for (int i=0; i<tilesets.initialSize; i++) {
-        tilesets.banks[i].destroy();
+void multitex::destroyAll() {
+    for (int i=0; i<initialSize; i++) {
+        banks[i].destroyAll();
+        banks[i].free();
     }
 }
-void bank::free(){
-    if (multitex.banks) {
-        delete[] multitex.banks;
-        multitex.banks = NULL;
-    }
-    if (tilesets.banks) {
-        delete[] tilesets.banks;
-        tilesets.banks = NULL;
+void multitex::free(){
+    if (banks) {
+        delete[] banks;
+        banks = NULL;
+        initialSize = 0;
     }
 }
-void bank::makeGlobal(MultiTextureBank& bank, unsigned int id) {
+void multitex::makeGlobal(MultiTextureBank& bank, unsigned int id) {
     //std::cout << "Texture bank made global at " << id << std::endl;
-    multitex.banks[id] = bank;
+    banks[id] = bank;
 }
-void bank::makeGlobal(TilesetBank& bnk, unsigned int id) {
-    //std::cout << "Texture bank made global at " << id << std::endl;
-    tilesets.banks[id] = bnk;
-}
-template<>
-const MultiTextureBank& bank::getBank(unsigned int id) {
+const MultiTextureBank& multitex::getBank(unsigned int id) {
     // static_assert(std::is_same_v<T, int> || std::is_same_v<T, float>, "Type must be a bank");
-    return multitex.banks[id];
-}
-template<>
-const TilesetBank& bank::getBank(unsigned int id) {
-    // static_assert(std::is_same_v<T, int> || std::is_same_v<T, float>, "Type must be a bank");
-    return tilesets.banks[id];
+    return banks[id];
 }
 
 #pragma endregion
+
+
+
+
+
+
+
+#pragma region bank::tileset
+// #namespace bank
+
+namespace bank::tileset {
+    TilesetBank* banks;
+    unsigned int initialSize = 0;
+} // namespace bank
+
+using namespace bank;
+
+void tileset::init(unsigned int num_banks) {
+    initialSize = num_banks;
+    banks = new TilesetBank[num_banks];
+}
+void tileset::destroyAll() {
+    for (int i=0; i<initialSize; i++) {
+        banks[i].destroy();
+    }
+}
+void tileset::free(){
+    if (banks) {
+        delete[] banks;
+        banks = NULL;
+        initialSize = 0;
+    }
+}
+void tileset::makeGlobal(TilesetBank& bank, unsigned int id) {
+    //std::cout << "Texture bank made global at " << id << std::endl;
+    banks[id] = bank;
+}
+const TilesetBank& tileset::getBank(unsigned int id) {
+    // static_assert(std::is_same_v<T, int> || std::is_same_v<T, float>, "Type must be a bank");
+    return banks[id];
+}
+
+#pragma endregion
+
+
+
+const Texture& bank::getTexture(const bank::TextureInfo& tinfo) {
+    if (tinfo.bankType == bank::bank_type::MULTITEX)
+        return multitex::banks[tinfo.bankID].getTexture(tinfo.textureID);
+    if (tinfo.bankType == bank_type::TILESET)
+        return tileset::banks[tinfo.bankID].getTexture();
+    // invalid bank, error it shall be: ->
+    return tileset::banks[0].getTexture();
+}
+
+
+void bank::destroyAll() {
+    tileset::destroyAll();
+    tileset::free();
+    multitex::destroyAll();
+    multitex::free();
+}

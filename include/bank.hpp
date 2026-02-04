@@ -61,13 +61,14 @@ public:
      */
     void free();
 };
+#pragma endregion
+
+#pragma region Tileset Bank
 
 #include <vector>
+#include <data_types.hpp>
 /**
- * Bank that contains multiple textures.
- * Not their tile rects tho.
- * If you have one texture and want to store their tile positions,
- * then consider using TilesetBank instead.
+ * Bank that contains one texture with multiple tile rects.
  */
 class TilesetBank {
 protected:
@@ -76,6 +77,8 @@ protected:
 public:
     TilesetBank() = default;
     ~TilesetBank() = default;
+
+    // constexpr TilesetBank &operator=(const TilesetBank &);
 
     /**
      * Loads texture into bank
@@ -104,43 +107,96 @@ public:
      */
     void destroy();
 };
+#pragma endregion
 
-
-
+#pragma region namespace bank
 
 /// TODO: Staviti sve drawable texture u jedan tileset. Sve player texture u jedan tileset. I onda ce da postoji samo jedna banka
 namespace bank {
-    enum textureBank {
-        MAP_DRAWABLE_TEXTURES,
-        PLAYER_TEXTURES,
+    namespace multitex {
+        /**
+         * Initializes the MultiTextureBank bank with given bank count.
+         */
+        void init(unsigned int num_banks);
+        /**
+         * Destroys all banks in list.
+         */
+        void destroyAll();
+        /**
+         * Frees whole bank list. Should be now initializable again (ofc not recommended)
+         */
+        void free();
+        /**
+         * Makes bank global at given index. [copy] done with operator=
+         * Bank will be accessible with getBank(index).
+         */
+        void makeGlobal(MultiTextureBank& bank, unsigned int index);
 
-        NUM_BANKS
+        /**
+         * @returns TextureBank at index
+         */
+        const MultiTextureBank& getBank(unsigned int index);
+    }
+    namespace tileset {
+        /**
+         * Initializes the TextureBank bank with given bank count.
+         */
+        void init(unsigned int num_banks);
+        /**
+         * Destroys all banks in list.
+         */
+        void destroyAll();
+        /**
+         * Frees whole bank list. Should be now initializable again (ofc not recommended)
+         */
+        void free();
+        /**
+         * Makes bank global at given index. [copy] done with operator=
+         * Bank will be accessible with getBank(index).
+         */
+        void makeGlobal(TilesetBank& bank, unsigned int index);
+
+        /**
+         * @returns TilesetBank at index
+         */
+        const TilesetBank& getBank(unsigned int index);
+    }
+
+
+    enum bank_type {
+        MULTITEX,
+        TILESET
     };
-    /**
-     * Initializes the TextureBank bank with given bank count.
-     */
-    void init(unsigned int num_multitex_banks, unsigned int num_tileset_banks);
-    /**
-     * Destroys all banks in list.
-     */
-    void destroyAll();
-    /**
-     * Frees whole bank list. Should be now initializable again (ofc not recommended)
-     */
-    void free();
-    /**
-     * Makes bank global at given index. [copy] done with operator=
-     * Bank will be accessible with getBank(index).
-     */
-    void makeGlobal(MultiTextureBank& bank, unsigned int index);
-    /// @see makeGlobal(2) 
-    void makeGlobal(TilesetBank& bank, unsigned int index);
+
 
     /**
-     * @returns TextureBank at index
+     * Describes the texture.
+     *  - in which bank it is
+     *  - texture id
+     *  - ...
      */
-    template <typename T>
-    const T& getBank(unsigned int index);
+    struct TextureInfo {
+        // bank (first parameter)
+        bank_type bankType;
+        unsigned int bankID;
+        // texture
+        union { // second parameter
+            TextureID textureID; // used in multitex
+            TextureID tileID; // used in tilesets
+        };
+        // third (optional) parameter
+        // only used in alone textures
+        Rectu tileRect;
+    };
+
+
+    
+    const Texture& getTexture(const TextureInfo&);
+
+
+
+    void destroyAll();
+
 } // namespace bank
 
 

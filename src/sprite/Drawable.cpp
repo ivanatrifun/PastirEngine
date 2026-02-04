@@ -49,8 +49,8 @@ float degreesToRadians(float degrees) {
 #include <allegro5/allegro_color.h>
 #include <game.hpp>
 void Drawable::drawData(const DrawableData& data, float2 translate) {
-    ALLEGRO_BITMAP* bitmap = bank::getBank(bank::MAP_DRAWABLE_TEXTURES)
-                                .getTexture(data[COMP_TEXTURE_ID])
+    ALLEGRO_BITMAP* bitmap = bank::tileset::getBank(0)
+                                .getTexture()
                                 .getAllegroBitmap();
     if (!bitmap) return;
 

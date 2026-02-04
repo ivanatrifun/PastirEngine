@@ -73,7 +73,8 @@ int __lvl_loader_load(const std::string& filepath) {
 
 
 int room_loader::load(unsigned int roomID) {
-    std::string filepath("/Users/luka/eclipse-workspace/Pastir-editor/");
+    std::string filepath(std::getenv("HOME"));
+    filepath += ("/eclipse-workspace/Pastir-editor/");
     filepath += std::to_string(roomID);
     filepath += ".txt";
     if (!std::filesystem::exists(filepath)) {

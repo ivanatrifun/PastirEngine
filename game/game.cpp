@@ -73,7 +73,8 @@ int game::init(){
     int __assets_path_err = 0;
     std::string __assets_path;
     //__assets_path = assman::getallegropathstr(ALLEGRO_RESOURCES_PATH, &__assets_path_err);
-    __assets_path = "/Users/luka/eclipse-workspace/Pastir-igrica/assets";
+    __assets_path = std::getenv("HOME");
+    __assets_path += "/eclipse-workspace/Pastir-igrica/assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 
     PIXEL_SCALE = 4.0f;
@@ -82,12 +83,14 @@ int game::init(){
     LUKA_ASSERT0(display.create(WINDOW_WIDTH*PIXEL_SCALE, WINDOW_HEIGHT*PIXEL_SCALE, "DEMO"));
     display.useScale(PIXEL_SCALE, PIXEL_SCALE);
     /* Bank loading */{
-        bank::init(bank::NUM_BANKS);
-        TilesetBank textureBank;
-        LUKA_ASSERT0(textureBank.init(Drawable::DRAWABLE_TEXTURE_COUNT));
-        LUKA_ASSERT0(textureBank.loadTextures(NULL, Drawable::TEXTURES, 0, Drawable::DRAWABLE_TEXTURE_COUNT, ".png",  ALLEGRO_VIDEO_BITMAP));
-        bank::makeGlobal(textureBank, bank::MAP_DRAWABLE_TEXTURES);
+        bank::tileset::init(1);
+        TilesetBank tbank;
+        tbank.loadTexture("drawables.png");
+        tbank.loadTileRects("drawableTiles.txt");
+        bank::tileset::makeGlobal(tbank, 0);
     }
+
+    std::cout << "Phase 2:\n";
 
     drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
 
@@ -105,7 +108,6 @@ void game::clean(){
     logger::info("Cleaning game components...");
 
     bank::destroyAll();
-    bank::free();
 
     display.destroy();
 }

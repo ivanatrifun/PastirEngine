@@ -6,5 +6,6 @@
         "cpp": "echo $workspaceRoot && cd $workspaceRoot && ./build.sh && ./a.out",
         "shellscript": "cd $dir && bash $fileName"
     },
+    "code-runner.runInTerminal": true,
     "C_Cpp.errorSquiggles": "enabled"
 }

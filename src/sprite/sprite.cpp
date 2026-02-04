@@ -37,51 +37,56 @@ void Sprite::move(float dx, float dy) {
     translate.y += dy;
 }
 
-
-void Sprite::setTexturesBank(bank::textureBank bnk) {
-    _bank = bnk;
+void Sprite::setTexturesBankType(bank::bank_type type) {
+    texInfo.bankType = type;
 }
-bank::textureBank Sprite::getTexturesBank() const {
-    return _bank;
+bank::bank_type Sprite::getTexturesBankType() const {
+    return texInfo.bankType;
+}
+void Sprite::setTexturesBankID(unsigned int bnk) {
+    texInfo.bankID = bnk;
+}
+unsigned int Sprite::getTexturesBankID() const {
+    return texInfo.bankID;
 }
 
 void Sprite::setTextureID(TextureID tex) {
-    textureID = tex;
+    texInfo.textureID = tex;
 }
 
 TextureID Sprite::getTextureID() const {
-    return textureID;
+    return texInfo.textureID;
 }
 
 void Sprite::setTile(const Rectu& rect) {
-    tileRect = rect;
+    texInfo.tileRect = rect;
 }
 void Sprite::setTile(uint mx, uint my, uint w, uint h) {
-    tileRect.min.x = mx;
-    tileRect.min.y = my;
-    tileRect.size.x = w;
-    tileRect.size.y = h;
+    texInfo.tileRect.min.x = mx;
+    texInfo.tileRect.min.y = my;
+    texInfo.tileRect.size.x = w;
+    texInfo.tileRect.size.y = h;
 }
 Rectu Sprite::getTile() const {
-    return tileRect;
+    return texInfo.tileRect;
 }
 
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 void Sprite::drawWhole(){
-    ALLEGRO_BITMAP* bitmap = bank::getBank(_bank).getTexture(textureID).getAllegroBitmap();
+    ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
     if (!bitmap) return;
     // al_draw_tinted_scaled_rotated_bitmap(bitmap, al_map_rgba(100,100,100, 100), cx, cy, dx, dy, xscale, yscale, angle,  flags);
     al_draw_bitmap(bitmap, position.x+translate.x, position.y+translate.y, 0);
 }
 
 void Sprite::draw() {
-    ALLEGRO_BITMAP* bitmap = bank::getBank(_bank).getTexture(textureID).getAllegroBitmap();
+    ALLEGRO_BITMAP* bitmap = bank::getTexture(texInfo).getAllegroBitmap();
     if (!bitmap) return;
     al_draw_bitmap_region(bitmap,
-        (float)tileRect.min.x, (float)tileRect.min.y,
-        (float)tileRect.size.x, (float)tileRect.size.y,
+        (float)texInfo.tileRect.min.x, (float)texInfo.tileRect.min.y,
+        (float)texInfo.tileRect.size.x, (float)texInfo.tileRect.size.y,
         position.x+translate.x, position.y+translate.y,
         0
     );

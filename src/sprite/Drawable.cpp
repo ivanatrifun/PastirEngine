@@ -24,6 +24,9 @@ Drawable::Drawable(TextureID texture, float x, float y) {
 void Drawable::init(TextureID tex, float x, float y) {
     setTextureID(tex);
     setPosition(x,y);
+    data[COMP_TEXTURE_ID] = tex;
+    data[COMP_X] = (int) round(x);
+    data[COMP_Y] = (int) round(y);
 }
 
 Drawable::Drawable(DrawableData& data) {
@@ -34,24 +37,28 @@ void Drawable::init(DrawableData& _data) {
     data = _data;
 }
 
+void Drawable::draw() {
+    Drawable::drawData(data, translate);
+}
+
 #include <cmath>
 float degreesToRadians(float degrees) {
     return degrees * M_PI / 180.0;
 }
-
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_color.h>
-void Drawable::drawData(DrawableData& data, float2 translate) {
-    ALLEGRO_BITMAP* bitmap = bank::getBank(BANK_MAP_DRAWABLE_TEXTUREBANK)
+#include <game.hpp>
+void Drawable::drawData(const DrawableData& data, float2 translate) {
+    ALLEGRO_BITMAP* bitmap = bank::getBank(bank::MAP_DRAWABLE_TEXTURES)
                                 .getTexture(data[COMP_TEXTURE_ID])
                                 .getAllegroBitmap();
     if (!bitmap) return;
 
-    // definition in game.cpp
-    static const float PIXEL_SCALE = 4.0f;
+    float PIXEL_SCALE = game::getPixelScale();
+
     // full translated position
-    float2 pos = {  static_cast<float>(data[COMP_X])/PIXEL_SCALE + translate.x,
-                    static_cast<float>(data[COMP_Y])/PIXEL_SCALE + translate.y  };
+    float2 pos = {  static_cast<float>(data[COMP_X])/DEFAULT_PIXEL_SCALE + translate.x,
+                    static_cast<float>(data[COMP_Y])/DEFAULT_PIXEL_SCALE + translate.y  };
     float angle = degreesToRadians(static_cast<float>(data[COMP_ANGLE]));
 
     float2 scale = {static_cast<float>(data[COMP_SCALEX])/100.0f, static_cast<float>(data[COMP_SCALEY])/100.0f};

@@ -10,12 +10,26 @@ class Sprite {
 protected:
     // cannot have its own private texture
     // but instead can have a bank texture id :)
+    /**
+     * Bank where the texture is stored
+     */
+    bank::textureBank _bank;
+    /**
+     * Texture ID of the texture stored in a texture bank
+     */
     TextureID textureID = -1;
+    Rectu tileRect = {{0,0},{16,16}};
+
     float2 position = {0,0};
     float2 translate = {0,0};
 public:
     Sprite() = default;
     ~Sprite() = default;
+
+    using uint = unsigned int;
+    void setTile(const Rectu&);
+    void setTile(uint minx, uint miny, uint width, uint height);
+    Rectu getTile() const;
 
     /**
      * Sets the position of the sprite.
@@ -47,11 +61,24 @@ public:
     void move(float dx, float dy);
 
     /**
-     * Draw
+     * Draws whole bitmap.
+     * Doesn't matter what's the tileRect configured
+     */
+    void drawWhole();
+
+    /**
+     * Draws the bitmap region (tileRect).
      */
     void draw();
 
 
+    /** Sets the texture's bank.
+     *  TextureID won't change after changing bank
+     * @param _bank
+     */
+    void setTexturesBank(bank::textureBank _bank);
+    /// @return Returns the bank where the sprite's texture is stored.
+    bank::textureBank getTexturesBank() const;
     /// @brief Speficy texture
     /// @param texture
     void setTextureID(TextureID texture);

@@ -38,6 +38,13 @@ void Sprite::move(float dx, float dy) {
 }
 
 
+void Sprite::setTexturesBank(bank::textureBank bnk) {
+    _bank = bnk;
+}
+bank::textureBank Sprite::getTexturesBank() const {
+    return _bank;
+}
+
 void Sprite::setTextureID(TextureID tex) {
     textureID = tex;
 }
@@ -46,11 +53,36 @@ TextureID Sprite::getTextureID() const {
     return textureID;
 }
 
+void Sprite::setTile(const Rectu& rect) {
+    tileRect = rect;
+}
+void Sprite::setTile(uint mx, uint my, uint w, uint h) {
+    tileRect.min.x = mx;
+    tileRect.min.y = my;
+    tileRect.size.x = w;
+    tileRect.size.y = h;
+}
+Rectu Sprite::getTile() const {
+    return tileRect;
+}
+
 
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
-void Sprite::draw(){
-    ALLEGRO_BITMAP* bitmap = bank::getBank(BANK_MAP_DRAWABLE_TEXTUREBANK).getTexture(textureID).getAllegroBitmap();
+void Sprite::drawWhole(){
+    ALLEGRO_BITMAP* bitmap = bank::getBank(_bank).getTexture(textureID).getAllegroBitmap();
+    if (!bitmap) return;
     // al_draw_tinted_scaled_rotated_bitmap(bitmap, al_map_rgba(100,100,100, 100), cx, cy, dx, dy, xscale, yscale, angle,  flags);
     al_draw_bitmap(bitmap, position.x+translate.x, position.y+translate.y, 0);
+}
+
+void Sprite::draw() {
+    ALLEGRO_BITMAP* bitmap = bank::getBank(_bank).getTexture(textureID).getAllegroBitmap();
+    if (!bitmap) return;
+    al_draw_bitmap_region(bitmap,
+        (float)tileRect.min.x, (float)tileRect.min.y,
+        (float)tileRect.size.x, (float)tileRect.size.y,
+        position.x+translate.x, position.y+translate.y,
+        0
+    );
 }

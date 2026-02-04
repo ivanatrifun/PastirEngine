@@ -7,17 +7,12 @@
 #include <sprite/Drawable.hpp>
 #include <input.hpp>
 #include <components/RoomLoader.hpp>
-
-// TODO: Bank<T> class
-
-#define WINDOW_WIDTH  800
-#define WINDOW_HEIGHT 640
-#define PIXEL_SCALE 4.0f
+#include <components/utility.hpp>
 
 Display display;
 Drawable drawable;
 Room room;
-
+float PIXEL_SCALE;
 
 #pragma region game::run
 
@@ -81,14 +76,18 @@ int game::init(){
     __assets_path = "/Users/luka/eclipse-workspace/Pastir-igrica/assets";
     printf("> Setting resources path to %s [errors=%d, %d]\n", __assets_path.c_str(), __assets_path_err, assman::setcwd(__assets_path));
 
+    PIXEL_SCALE = 4.0f;
 
-    LUKA_ASSERT0(display.create(WINDOW_WIDTH, WINDOW_HEIGHT, "DEMO"));
+
+    LUKA_ASSERT0(display.create(WINDOW_WIDTH*PIXEL_SCALE, WINDOW_HEIGHT*PIXEL_SCALE, "DEMO"));
     display.useScale(PIXEL_SCALE, PIXEL_SCALE);
-    bank::init(1);
-    TextureBank textureBank;
-    LUKA_ASSERT0(textureBank.init(Drawable::DRAWABLE_TEXTURE_COUNT));
-    LUKA_ASSERT0(textureBank.loadTextures(NULL, Drawable::TEXTURES, 0, Drawable::DRAWABLE_TEXTURE_COUNT, ".png",  ALLEGRO_VIDEO_BITMAP));
-    bank::makeGlobal(textureBank, BANK_MAP_DRAWABLE_TEXTUREBANK);
+    /* Bank loading */{
+        bank::init(bank::NUM_BANKS);
+        TilesetBank textureBank;
+        LUKA_ASSERT0(textureBank.init(Drawable::DRAWABLE_TEXTURE_COUNT));
+        LUKA_ASSERT0(textureBank.loadTextures(NULL, Drawable::TEXTURES, 0, Drawable::DRAWABLE_TEXTURE_COUNT, ".png",  ALLEGRO_VIDEO_BITMAP));
+        bank::makeGlobal(textureBank, bank::MAP_DRAWABLE_TEXTURES);
+    }
 
     drawable.init(Drawable::TEXTURE_GRASS, 100.0f, 100.0f);
 
@@ -111,3 +110,8 @@ void game::clean(){
     display.destroy();
 }
 #pragma endregion
+
+
+float game::getPixelScale() {
+    return PIXEL_SCALE;
+}

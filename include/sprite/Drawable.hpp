@@ -152,7 +152,10 @@ public:
     void init(TextureID texture, float x=0.0f, float y=0.0f);
     void init(DrawableData& data);
 
-    static void drawData(DrawableData& data, float2 translate={0,0});
+    /// @brief calls drawData(data);
+    void draw();
+
+    static void drawData(const DrawableData& data, float2 translate={0,0});
 };
 
 #endif
